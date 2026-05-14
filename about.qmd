@@ -1,0 +1,19 @@
+---
+title: "About"
+image: profilephoto.jpg
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/melinda-stueber-9b258b22b/
+    - icon: github
+      text: Github
+      href: https://github.com/melindastueber
+---
+
+Welcome all! I am graduate student at CSU working on my degree of Master of Natural Resource Stewardship Program focusing on ecological restoration and certificate in Data Analysis (a mouthful, I know).
+
+I am also a human trying to manage an angry immune-system (whoot!).
+
+I started this blog to document the intersection of the fun, but sometimes laborious field of ecology and the world of "container maintenance" (a.ka. health issues). I will have it all: exploring the pains and joys of RStudio, hiking up mountains to stare at plants, and the wonders of being a "chronic illness girlie."

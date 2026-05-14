@@ -1,0 +1,20 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  description: "This is Melinda Stueber's personal Blog"
+  site-url: https://github.com/melindastueber/final_project_blog # you must change this appropriately for RSS feeds to work properly
+  title: "Melinda Stueber"
+  navbar:
+    right:
+      - about.qmd
+format:
+  html:
+    theme:
+      - litera
+      - brand
+    css: styles.css
+
+editor: visual
+

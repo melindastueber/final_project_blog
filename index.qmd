@@ -1,0 +1,19 @@
+---
+title: "My Blog"
+listing:
+  contents: posts
+  feed: true
+  sort: "date desc"
+  type: default
+  categories: true
+  sort-ui: true
+  filter-ui: false
+  fields: [date, title, reading-time, description, categories]
+title-block-banner: false
+---
+
+## 🌿Welcome to the chaos 🌿
+
+Hello, I am Melinda! I am an ecologist in training, recovered hater of coding, and full-time caretaker of my immune system. This blog combines all the fun of graduate school in ecological restoration and navigating chronic illness...it is definitely an adventure!
+
+*Want to know more? Head to my [About](about.qmd) page.*
