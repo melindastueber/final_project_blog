@@ -1,6 +1,6 @@
 ---
 title: "Geospatial Coding: Map Assignment"
-author: "Harlow Malloc"
+author: "Melinda Stueber"
 date: "2026-05-10"
 categories: [code, analysis]
 image: "image.png"
@@ -8,7 +8,7 @@ image: "image.png"
 
 # Coding and Mapping, Oh My!
 
-Here is a sample of my blood sweat and tears. 🩸 I don't want to shock you, but this is a student sample, emphasis on **student**. This was a challenging project as much of my experience coding has focused on data analysis without any of the geo-spatial pizzazz. 💥.
+Here is a sample of my blood sweat and tears🩸. I don't want to shock you, but this is a student sample, emphasis on **student**. This was a challenging project as much of my experience coding has focused on data analysis without any of the geo-spatial pizzazz. 💥.
 
 I wanted to look at railroads, eco-regions, and wildlife hot-spots around railroads in Colorado for this assignment I did for ESS523A. 
 
@@ -185,4 +185,4 @@ tmap_save(map, "C:/Users/melin/Geospatial/Rails_Wildlife_CO_map.png")
 
 ![Colorado Wildlife and Railroad Map](Rails_Wildlife_CO_map1.png)
 
-It isn't the prettiest map in the world, but she's mine and I was proud that it actually generated something. So if you've learned anything, know that if I can code, you can too! We are all learning, it is part of the fun, sometimes anger-inducing, process of R. 
+So if you've learned anything, know that if I can code, you can too! We are all learning, it is part of the fun, sometimes anger-inducing, process of R. 

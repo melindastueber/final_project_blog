@@ -7,6 +7,9 @@ website:
   site-url: https://github.com/melindastueber/final_project_blog # you must change this appropriately for RSS feeds to work properly
   title: "Melinda Stueber"
   navbar:
+    left: 
+      - text: "Home"
+        href: index.qmd
     right:
       - about.qmd
 format:

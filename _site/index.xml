@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Melinda Stueber</title>
+<link>https://your-website-url.example.com/</link>
+<atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
+<description>This is Melinda Stueber&#39;s personal Blog</description>
+<generator>quarto-1.8.25</generator>
+<lastBuildDate>Sun, 10 May 2026 06:00:00 GMT</lastBuildDate>
+<item>
+  <title>Geospatial Coding: Map Assignment</title>
+  <dc:creator>Harlow Malloc</dc:creator>
+  <link>https://your-website-url.example.com/posts/post-with-code/post_05_13_2026.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="coding-and-mapping-oh-my" class="level1">
+<h1>Coding and Mapping, Oh My!</h1>
+<p>Here is a sample of my blood sweat and tears. 🩸 I don’t want to shock you, but this is a student sample, emphasis on <strong>student</strong>. This was a challenging project as much of my experience coding has focused on data analysis without any of the geo-spatial pizzazz. 💥.</p>
+<p>I wanted to look at railroads, eco-regions, and wildlife hot-spots around railroads in Colorado for this assignment I did for ESS523A.</p>
+<p>This is a setup script I was taught to have and use throughout my projects. It is super helpful because then you don’t have to continually tell R to “please load these eight billion packages I need by name”. Just put the setup into a Rscript and save it as setup.R and off you go!</p>
+</section>
+<section id="set-up-script" class="level1">
+<h1>Set up script</h1>
+<p>function to check for package installation, then install and load libraries.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1">packageLoad <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span></span>
+<span id="cb1-2">  <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span>(x) {</span>
+<span id="cb1-3">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(x)) {</span>
+<span id="cb1-4">      <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span>x[i] <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">installed.packages</span>()) {</span>
+<span id="cb1-5">        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(x[i])</span>
+<span id="cb1-6">      }</span>
+<span id="cb1-7">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(x[i], <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">character.only =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span>
+<span id="cb1-8">    }</span>
+<span id="cb1-9">  }</span></code></pre></div></div>
+</div>
+<p>vector of packages to load</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">packages <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'tidyverse'</span>,</span>
+<span id="cb2-2">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'palmerpenguins'</span>,</span>
+<span id="cb2-3">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'sf'</span>,</span>
+<span id="cb2-4">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'terra'</span>,</span>
+<span id="cb2-5">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'tmap'</span>,</span>
+<span id="cb2-6">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'rmarkdown'</span>,</span>
+<span id="cb2-7">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'tigris'</span>,</span>
+<span id="cb2-8">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'elevatr'</span>,</span>
+<span id="cb2-9">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'rgbif'</span>,</span>
+<span id="cb2-10">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'soilDB'</span>,</span>
+<span id="cb2-11">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'plotly'</span>,</span>
+<span id="cb2-12">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'mapview'</span>,</span>
+<span id="cb2-13">              <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"leaflet"</span>)</span>
+<span id="cb2-14"></span>
+<span id="cb2-15"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">packageLoad</span>(packages)</span></code></pre></div></div>
+</div>
+<p>First I actually needed to get data for roads (Vector Data).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">source</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"setup.R"</span>)</span>
+<span id="cb3-2">rails <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rails</span>()</span>
+<span id="cb3-3">CO_boundary <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">states</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(STUSPS <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"CO"</span>)</span>
+<span id="cb3-4">CO_rails <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_filter</span>(rails, CO_boundary)</span>
+<span id="cb3-5"></span>
+<span id="cb3-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb3-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_sf</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> CO_rails)</span></code></pre></div></div>
+</div>
+<p>Next I needed to get data for Colorado Ecoregions (Vector Data).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">CO_ecoregions <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_read</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C:/Users/melin/Geospatial/co_eco_l3/co_eco_l3.shp"</span>)</span>
+<span id="cb4-2"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#Map came out tilted so need to transform to different CSR</span></span>
+<span id="cb4-3">CO_ecoregions_prj <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_transform</span>(CO_ecoregions, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_crs</span>(CO_rails))</span>
+<span id="cb4-4"></span>
+<span id="cb4-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_sf</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> CO_ecoregions_prj, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> US_L3NAME)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_sf</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> CO_rails) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_minimal</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb4-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Colorado Ecoregions Map"</span>)</span></code></pre></div></div>
+</div>
+<p>And then I needed to obtain data for migratory animals (Mule Deer, Elk, Black Bear).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#make a string of species names to use in the 'occ_data' function</span></span>
+<span id="cb5-2">species <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Cervus canadensis"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Odocoileus hemionus"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Ursus americanus"</span>)</span>
+<span id="cb5-3"></span>
+<span id="cb5-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#also make a string of common names</span></span>
+<span id="cb5-5">common_name <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Elk"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Mule Deer"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Black Bear"</span>)</span>
+<span id="cb5-6"></span>
+<span id="cb5-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#map2</span></span>
+<span id="cb5-8">species_occ <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span>(sci_name, comm_name){</span>
+<span id="cb5-9">t_occ <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span></span>
+<span id="cb5-10">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">occ_data</span>(</span>
+<span id="cb5-11">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scientificName =</span> sci_name,</span>
+<span id="cb5-12">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">hasCoordinate =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>,</span>
+<span id="cb5-13">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">geometry =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_bbox</span>(CO_ecoregions_prj),</span>
+<span id="cb5-14">      <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limit =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2000</span> </span>
+<span id="cb5-15">    ) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb5-16">    .<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>data </span>
+<span id="cb5-17">  </span>
+<span id="cb5-18">  t_occ<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>ID <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> comm_name</span>
+<span id="cb5-19">  </span>
+<span id="cb5-20">  t_occ <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span></span>
+<span id="cb5-21">    t_occ <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">distinct</span>(decimalLatitude, decimalLongitude, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.keep_all =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb5-22">    dplyr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">Species =</span> ID,</span>
+<span id="cb5-23">                  decimalLatitude,</span>
+<span id="cb5-24">                  decimalLongitude,</span>
+<span id="cb5-25">                  year,</span>
+<span id="cb5-26">                  month,</span>
+<span id="cb5-27">                  basisOfRecord) </span>
+<span id="cb5-28"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(t_occ)</span>
+<span id="cb5-29">}</span>
+<span id="cb5-30"></span>
+<span id="cb5-31">output_species <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> purrr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">map2</span>(species, common_name, species_occ)</span>
+<span id="cb5-32"></span>
+<span id="cb5-33">occ <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">bind_rows</span>(output_species) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb5-34">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_as_sf</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">coords =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"decimalLongitude"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"decimalLatitude"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">crs =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4236</span>)</span>
+<span id="cb5-35"></span>
+<span id="cb5-36">occ_prj <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_transform</span>(occ, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_crs</span>(CO_ecoregions_prj))</span></code></pre></div></div>
+</div>
+<p>Next, compile the data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#make data more manageable, group by ecoregions and distance to railroad</span></span>
+<span id="cb6-2">railroad_buffer <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_buffer</span>(CO_rails, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">dist =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">500</span>)</span>
+<span id="cb6-3">occ_prj<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>railroad_intersections <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_intersects</span>(occ_prj, railroad_buffer)</span>
+<span id="cb6-4"></span>
+<span id="cb6-5"></span>
+<span id="cb6-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#join data</span></span>
+<span id="cb6-7">eco_rail_occ <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_join</span>(occ_prj, CO_ecoregions_prj) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb6-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">near_rails_500m =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">if_else</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lengths</span>(railroad_intersections) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>, <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>))</span>
+<span id="cb6-9"></span>
+<span id="cb6-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#summarize</span></span>
+<span id="cb6-11">all_sum <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> eco_rail_occ <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb6-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_drop_geometry</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb6-13">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">group_by</span>(US_L3NAME) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span> </span>
+<span id="cb6-14">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summarise</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">total_occ =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">n</span>(), </span>
+<span id="cb6-15">            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">total_railroad =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(near_rails_500m <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>),</span>
+<span id="cb6-16">            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">percent_railroad =</span> (<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sum</span>(near_rails_500m <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>total_occ)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">.groups =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"drop"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb6-17">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">is.na</span>(US_L3NAME))</span>
+<span id="cb6-18"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">class</span>(all_sum)</span>
+<span id="cb6-19"></span>
+<span id="cb6-20">eco_spatial <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> CO_ecoregions_prj <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%&gt;%</span></span>
+<span id="cb6-21">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">inner_join</span>(all_sum, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">by =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"US_L3NAME"</span>)</span></code></pre></div></div>
+</div>
+</section>
+<section id="map-data" class="level1">
+<h1>Map Data</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tmap_mode</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"plot"</span>)</span>
+<span id="cb7-2"></span>
+<span id="cb7-3">map <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_shape</span>(CO_ecoregions_prj) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_polygons</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"US_L3NAME"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill.scale =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_scale_categorical</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"brewer.pastel1"</span>),</span>
+<span id="cb7-5">              <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill.legend =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_legend</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Ecoregions III"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_shape</span>(eco_spatial) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_bubbles</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"percent_railroad"</span>,</span>
+<span id="cb7-8">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"blue"</span>,</span>
+<span id="cb7-9">             <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size.legend =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_legend</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">" %Wildlife Near Railroad"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">orientation =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"landscape"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-10"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_shape</span>(CO_rails) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_lines</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"red"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_add_legend</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">labels =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Railroads"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"lines"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">col =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Infrastructure"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-13"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_title</span>(</span>
+<span id="cb7-14">  <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Combined Wildlife Proximity to Railroads in Colorado</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">\n</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">(Elk, Mule Deer, Black Bear)"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fontface =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bold"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">position =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_pos_out</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"center"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"top"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-15">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_layout</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">frame =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>, </span>
+<span id="cb7-16">            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.outside =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>,</span>
+<span id="cb7-17">            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.outside.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"right"</span>,</span>
+<span id="cb7-18">            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.outside.size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>,</span>
+<span id="cb7-19">            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.text.size =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>,</span>
+<span id="cb7-20">            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.title.size =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-21">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_scalebar</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">position =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"left"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bottom"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-22">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_compass</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">position =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"right"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"top"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb7-23">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tm_credits</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Map by Melinda Stueber | Data Sources: EPA, TIGRIS, GBIF"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">position =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"left"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bottom"</span>), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span>) </span>
+<span id="cb7-24"></span>
+<span id="cb7-25">map</span>
+<span id="cb7-26"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">tmap_save</span>(map, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"C:/Users/melin/Geospatial/Rails_Wildlife_CO_map.png"</span>)</span></code></pre></div></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/post-with-code/Rails_Wildlife_CO_map1.png" class="img-fluid figure-img"></p>
+<figcaption>Colorado Wildlife and Railroad Map</figcaption>
+</figure>
+</div>
+<p>It isn’t the prettiest map in the world, but she’s mine and I was proud that it actually generated something. So if you’ve learned anything, know that if I can code, you can too! We are all learning, it is part of the fun, sometimes anger-inducing, process of R.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>code</category>
+  <category>analysis</category>
+  <guid>https://your-website-url.example.com/posts/post-with-code/post_05_13_2026.html</guid>
+  <pubDate>Sun, 10 May 2026 06:00:00 GMT</pubDate>
+  <media:content url="https://your-website-url.example.com/posts/post-with-code/image.png" medium="image" type="image/png"/>
+</item>
+<item>
+  <title>Welcome To My Blog</title>
+  <dc:creator>Melinda Stueber</dc:creator>
+  <link>https://your-website-url.example.com/posts/welcome/post_05_07_2026.html</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<p>Welcome to my first time blogging. Anticipate pure awesomeness without any flaws 🤌.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/welcome/post_05_07_2026_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Above is my fun path of diagnosis. Like many people, I am sure, the first diagnosis was not the first time symptoms appeared. I started having symptoms the moment I popped out of the womb. My intestines decided early on that participating in digestion was just too much work (it probably didn’t help that my food intake ranged from cheese, bread, and occasionally, too many FiberOne bars in a single setting). I recall once, when I was in middle school, my friend came over to hang out, and we got hungry, which was usually every two minutes when you are a young, growing child. I decided to eat some FiberOne bars, and I could chunk four or five of ’em without any issue. My friend decided to follow in my footsteps, and we found out quickly that perhaps not everyone had a stomach that just won’t process things that fast. She went home and got very sick (whoopsies). I was also always getting sick, things moving too fast (I know crazy) or not moving enough, and I remember thinking “wow, everyone else is just so much more graceful at handling this than me.” The pediatrician would just shrug his shoulders and chalk it up to a poor diet when my mother brought up my stomach problems. Now, to be fair to the man, my diet wasn’t the best. I had the cravings of a starving 18th-century woman. I wanted carbs and sugar and lots of cheese. So he wasn’t technically wrong, but even when my mom made me eat vegetables and salads and actual food, not microwaved nachos, my stomach was still an absolute disaster. When my legs started hurting in high school in the middle of the night, to the point of waking me up to stare at the old glow-in-the-dark stars on my ceiling and wait for it to stop, the doctors didn’t really know what to do. It wasn’t until I was 25, unable to walk faster than the elderly in the grocery store (and boy did I try), that I really pushed to figure things out and ended up getting diagnosed with non-radiographic axial spondyloarthritis (if you ever want to impress anyone at a party, just whip that word out). I won’t give you too much more of my woes just yet, but I want people to know - you are not alone when you feel like your body is off and doctors can’t see anything. I also want people to know that without advocating for myself and without the doctors who listened to me (giant shout-out to them), I wouldn’t have gotten the diagnoses. And the most important thing about getting diagnosed isn’t to have friends make Pokémon characters for each one to say you’re trying “to catch them all”, but to learn how to treat them and adapt to your body instead of pushing it to work like everyone else’s.</p>
+
+
+
+ ]]></description>
+  <category>health</category>
+  <guid>https://your-website-url.example.com/posts/welcome/post_05_07_2026.html</guid>
+  <pubDate>Thu, 07 May 2026 06:00:00 GMT</pubDate>
+</item>
+</channel>
+</rss>
